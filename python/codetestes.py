@@ -35,3 +35,4 @@ for (x, y, l, a) in detect_faces:
 cv2.imshow('Face Validador', imagem )
 cv2.waitKey()
 cv2.destroyAllWindows()
+#git remote add origin
