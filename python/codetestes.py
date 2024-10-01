@@ -1,7 +1,16 @@
 import cv2
-
+#Lógica:
+    #carregar algoritimo 
+    #carregar minha imagem ou meu video
+    #transformar minha imagem na cor cinza
+    #detectar o rosto na imagem ou no video
+    #mostrar algum valor
+    #desenhar o retangulo na face detectada ou as fazer ou seja precisar ser um loop
+        #fazer o molde do desenho
+    #abrir minha janela para mostrar
+    #comandos finais 
 #observações:
-    #parametros para ajustar imagem e sua parasia, scaleFactor= 1.08, minNeighbors=1, minSize=(30,30):
+#parametros para ajustar imagem e sua parasia, scaleFactor= 1.08, minNeighbors=1, minSize=(30,30):
 
 #carregar o algoritmo do opencv tipo a função que estou usando
 carregar_face = cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_default.xml')
@@ -23,10 +32,11 @@ for (x, y, l, a) in detect_faces:
     desenho_imagem = cv2.rectangle(imagem, (x, y), (x + l, y + a), (255,0,0), 2)
 
     #identificar olho quando identificar um rosto
-    localolho = desenho_imagem[y:y + a, x:x +l] #tem que entender melhor esse bglh pq é dificil pra prr
+    localolho = desenho_imagem[y: y + a, x: x + l] #tem que entender melhor esse bglh pq é dificil pra prr
 
     localolho_cinza = cv2.cvtColor(localolho, cv2.COLOR_BGR2GRAY)
     olho_detectado = carregar_olhos.detectMultiScale(localolho_cinza)
+    print(olho_detectado)
 
     for (ox, oy, ol, oa) in olho_detectado:
         cv2.rectangle(localolho, (ox, oy), (ox + ol, oy + oa), (255,0, 255),2)
@@ -35,4 +45,5 @@ for (x, y, l, a) in detect_faces:
 cv2.imshow('Face Validador', imagem )
 cv2.waitKey()
 cv2.destroyAllWindows()
+
 #git remote add origin

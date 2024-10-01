@@ -15,7 +15,7 @@ while True:
 
     #detectar rostos no frame
     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-
+    print(faces)
     #Desenhar retângulos ao redor dos rostos detectados
 
     for(x,y,w,h) in faces:
