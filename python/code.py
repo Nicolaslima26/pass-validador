@@ -1,34 +1,54 @@
 import cv2
 
-face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+# Carregar o classificador Haar
+classificador_video = cv2.CascadeClassifier("haarcascades/haarcascade_frontalface_default.xml")
+# Carregar o modelo treinado
+reconhecimento = cv2.face.LBPHFaceRecognizer_create()
+reconhecimento.read("treinamento-face_recognition7.yml")
 
-cap = cv2.VideoCapture(0)
- 
+# Inicializar a webcam
+webCamera = cv2.VideoCapture(0)
 
 while True:
-    #capturar frame a frame
-    ret, frame = cap.read()
+    camera, frame = webCamera.read()
+    imagemCinza = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    detect = classificador_video.detectMultiScale(imagemCinza, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
-    #converte o frame para a escala de cinza (necessário para a detecção)
+    for (x, y, l, a) in detect:
+        imagemFace = cv2.resize(imagemCinza[y:y + a, x:x + l], (100, 100))
+        cv2.rectangle(frame, (x, y), (x + l, y + a), (255, 0, 0), 2)
+        id, confianca = reconhecimento.predict(imagemFace)
+        
+        if confianca < 100:
+            print(id)# Ajuste este valor conforme necessário
+            if id == 1:
+                nome = "nicolas"
+                cv2.rectangle(frame, (x, y), (x + l, y + a), (0, 255, 0), 2)
+            elif id == 2:
+                nome = "eduardo"
+                cv2.rectangle(frame, (x, y), (x + l, y + a), (0, 255, 0), 2)
+            elif id == 3:
+                nome = "ryan"
+                cv2.rectangle(frame, (x, y), (x + l, y + a), (0, 255, 0), 2)
+            elif id == 4:
+                nome = "ksousa"
+                cv2.rectangle(frame, (x, y), (x + l, y + a), (0, 255, 0), 2)
+            elif id == 5:
+                nome = "alessandro"
+                cv2.rectangle(frame, (x, y), (x + l, y + a), (0, 255, 0), 2)
+            else:
+                cv2.rectangle(frame, (x, y), (x + l, y + a), (0, 0, 255), 2)
+                nome = "Desconhecido"
+        else:
+            cv2.rectangle(frame, (x, y), (x + l, y + a), (255, 0, 0), 2)
+            nome = "em analise"
+        
+        cv2.putText(frame, f"{nome} - {confianca:.2f}", (x, y + a + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 255, 0), 2)
 
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    cv2.imshow("Face Validador", frame)
 
-    #detectar rostos no frame
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-    print(faces)
-    #Desenhar retângulos ao redor dos rostos detectados
-
-    for(x,y,w,h) in faces:
-        cv2.rectangle(frame, (x,y) , (x+w, y+h), (0,0,255), 2)
-
-    # mostrar os frames com as detecções
-    cv2.imshow('Face Validator', frame)
-
-    #sair do loopb qunado a tecla 'q' for pressionada 
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) == ord("f"):
         break
 
-cap.release()
+webCamera.release()
 cv2.destroyAllWindows()
-

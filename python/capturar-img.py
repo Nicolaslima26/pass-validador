@@ -4,8 +4,8 @@ classificador_video = cv.CascadeClassifier("haarcascades/haarcascade_frontalface
 webCamera = cv.VideoCapture(0)
 
 amostra = 1
-numeroAmostras = 25
-id = int(input("digite seu idenficador"))
+numeroAmostras = 100
+id = input("digite seu idenficador")
 
 while True:
     camera, frame = webCamera.read()
