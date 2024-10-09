@@ -16,6 +16,9 @@ reconhecimento = cv2.face.LBPHFaceRecognizer_create()
 reconhecimento.read("treinamento-face_recognition3.yml")
 
 webCamera = cv2.VideoCapture(0)
+contador_pessoas = 0
+# Armazena IDs de pessoas já detectadas
+pessoas_detectadas = set()
 
 while True:
     camera, frame = webCamera.read()
@@ -47,16 +50,18 @@ while True:
             
         cv2.putText(frame, f"{nome} - {confianca:.2f} ",(x,y +(a +30)), cv2.FONT_HERSHEY_COMPLEX, 1, (0,255,0))
         #contador de   quantas pessoas já foram detectadas
+        if id not in pessoas_detectadas and id != -1:  # Ignorar ID -1 ou IDs desconhecidos
+            pessoas_detectadas.add(id)  # Adicionar o novo ID à lista de detectados
+            contador_pessoas += 1  # Incrementar o contador
         cont = str(detect.shape[0])
         cv2.putText(frame, "faces detectadas:" + cont, (45, 450), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2, cv2.LINE_AA)
-        cont = int(cont)
 
     cv2.imshow("face Validador", frame)
     print(id)
+    
     if cv2.waitKey(1) == ord("f"):
         break
-print(f"quantidade de funcionarios no fim do dia {cont}")
-print(f"ID: {id}, Confiança: {confianca}")  # Debugging
-
+    
+print(f"dia 09/10/2024 estiveram presente {contador_pessoas} funcionarios sendo eles: {pessoas_detectadas}")  
 webCamera.release()
 cv2.destroyAllWindows()
