@@ -1,7 +1,7 @@
 import cv2
 import serial
 import time
-arduino = serial.Serial('COM5', 9600, timeout=10)
+arduino = serial.Serial('COM6', 9600, timeout=3)
 time.sleep(2)  # Tempo para estabilizar a conexão serial
 # Carregar o classificador Haar
 classificador_video = cv2.CascadeClassifier("haarcascades/haarcascade_frontalface_default.xml")
@@ -18,30 +18,26 @@ try:
         camera, frame = webCamera.read()
         imagemCinza = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         detect = classificador_video.detectMultiScale(imagemCinza, scaleFactor=1.1, minNeighbors=5, minSize=(33, 33))
-
+        arduino.write(b'0') 
         for (x, y, l, a) in detect:
             imagemFace = cv2.resize(imagemCinza[y:y + a, x:x + l], (100, 100))
             cv2.rectangle(frame, (x, y), (x + l, y + a), (255, 0, 0), 2)
             id, confianca = reconhecimento.predict(imagemFace)
             
-            if confianca < 100:
+            if confianca < 100: 
                 print(id)# Ajuste este valor conforme necessário
                 if id == 1:
                     nome = "nicolas"
                     cv2.rectangle(frame, (x, y), (x + l, y + a), (0, 255, 0), 2)
                         # Se detectar rosto, envia o comando para acender o LED
-                    if len(detect) > 0:
-                        arduino.write(b'1')  # Envia o caractere '1' para o Arduino (acender LED)
-                    else:
-                        arduino.write(b'0')  # Envia o caractere '0' para o Arduino (apagar LED)
-
+                    if len(detect) > 0: 
+                        arduino.write(b'1') # Envia o caractere '1' para o Arduino (acender LED)
                 elif id == 2:
                     nome = "ryan"
                     cv2.rectangle(frame, (x, y), (x + l, y + a), (0, 255, 0), 2)
                     if len(detect) > 0:
-                        arduino.write(b'1')  # Envia o caractere '1' para o Arduino (acender LED)
-                    else:
-                        arduino.write(b'0')  # Envia o caractere '0' para o Arduino (apagar LED)
+                        arduino.write(b'1') # Envia o caractere '1' para o Arduino (acender LED)
+                
 
                 # elif id == 3:
                 #     nome = "eduardo"
@@ -70,9 +66,11 @@ try:
                 else:
                     cv2.rectangle(frame, (x, y), (x + l, y + a), (0, 0, 255), 2)
                     nome = "Desconhecido"
+                    arduino.write(b'0')  # Envia o caractere '0' para o Arduino (apagar LED)
             else:
                 cv2.rectangle(frame, (x, y), (x + l, y + a), (255, 0, 0), 2)
                 nome = "em analise"
+                arduino.write(b'0')  # Envia o caractere '0' para o Arduino (apagar LED)
             
             cv2.putText(frame, f"{nome} - {confianca:.2f}", (x, y + a + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 255, 0), 2)
             

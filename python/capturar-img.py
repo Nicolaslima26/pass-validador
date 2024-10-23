@@ -4,13 +4,13 @@ classificador_video = cv.CascadeClassifier("haarcascades/haarcascade_frontalface
 webCamera = cv.VideoCapture(0)
 
 amostra = 1
-numeroAmostras = 100
+numeroAmostras = 150
 id = input("digite seu idenficador")
 
 while True:
     camera, frame = webCamera.read()
     imagemCinza = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-    detect = classificador_video.detectMultiScale(imagemCinza)
+    detect = classificador_video.detectMultiScale(imagemCinza,  scaleFactor=1.1, minNeighbors=5, minSize=(33, 33))
 
     for (x, y, l, a) in detect:
         cv.rectangle(frame, (x, y), (x + l, y + a), (0,255,0), 2 )

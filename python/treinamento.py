@@ -27,7 +27,6 @@ print('Treinando a máquina, aprendendo...')
 # Treinar o modelo
 lbph.train(faces, ids)
 # Salvar o modelo treinado
-lbph.write('treinamento-face_recognition9.yml')
+lbph.write('treinamento-face_recognition12.yml')
 
 print('Treinamento concluído')
-print(ids, faces)
